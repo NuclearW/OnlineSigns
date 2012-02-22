@@ -1,0 +1,7 @@
+== OnlineSigns
+
+OnlineSigns - Slaps signs with a fish, get a playerlist
+
+=== Compiling
+
+Maven 3 is required to compile OnlineSigns

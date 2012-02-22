@@ -1,0 +1,13 @@
+name: OnlineSigns
+main: com.nuclearw.onlinesigns.OnlineSigns
+version: ${project.version}
+author: NuclearW
+description: OnlineSigns - Slaps signs with a fish, get a playerlist
+permissions:
+    onlinesigns.*:
+        default: op
+        description: Alias of onlinesigns.create
+        children:
+            onlinesigns.create: true
+    onlinesigns.create:
+        description: Make online sign boards.
