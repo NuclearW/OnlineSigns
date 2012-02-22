@@ -1,15 +1,18 @@
 package com.nuclearw.onlinesigns;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockListener;
 
-public class OnlineSignsBlockListener extends BlockListener {
+public class OnlineSignsBlockListener implements Listener {
 	public static OnlineSigns plugin;
-	
+
 	public OnlineSignsBlockListener(OnlineSigns instance) {
 		plugin = instance;
 	}
-	
+
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	public void onBlockBreak(BlockBreakEvent event) {
 		int changedMaterial = event.getBlock().getTypeId();
 		if(changedMaterial == 63 || changedMaterial == 68) {

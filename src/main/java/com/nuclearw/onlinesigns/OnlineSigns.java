@@ -25,7 +25,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -106,12 +105,9 @@ public class OnlineSigns extends JavaPlugin {
 		
 		this.maxplayers = getServer().getMaxPlayers();
 		PluginManager pluginManager = getServer().getPluginManager();
-		pluginManager.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Monitor, this);
-		pluginManager.registerEvent(Event.Type.PLAYER_KICK, playerListener, Priority.Monitor, this);
-		pluginManager.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
-		pluginManager.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Monitor, this);
-		pluginManager.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Monitor, this);
-        pluginManager.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Event.Priority.Highest, this);
+		pluginManager.registerEvents(playerListener, this);
+		pluginManager.registerEvents(pluginListener, this);
+        pluginManager.registerEvents(blockListener, this);
 		
 		log.info("[OnlineSigns] version " + this.getDescription().getVersion() + " loaded.");
 	}

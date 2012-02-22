@@ -2,34 +2,40 @@ package com.nuclearw.onlinesigns;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.lang.Math;
 
-public class OnlineSignsPlayerListener extends PlayerListener {
+public class OnlineSignsPlayerListener implements Listener {
 	public static OnlineSigns plugin;
-	
+
 	public OnlineSignsPlayerListener(OnlineSigns instance) {
 		plugin = instance;
 	}
-	
+
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		plugin.updateSigns();
 	}
-	
+
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		plugin.updateSigns();
 	}
-	
+
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	public void onPlayerKick(PlayerKickEvent event) {
 		plugin.updateSigns();
 	}
-	
+
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			//No fisticuffs
@@ -43,7 +49,7 @@ public class OnlineSignsPlayerListener extends PlayerListener {
 						slapper.sendMessage(ChatColor.RED + OnlineSigns.language[7]);
 						return;
 					}
-					
+
 					Boolean redFish = false;
 					if(plugin.oneFish.containsKey(slapper)) {
 						redFish = plugin.oneFish.get(slapper);
@@ -53,7 +59,7 @@ public class OnlineSignsPlayerListener extends PlayerListener {
 					if(redFish) {
 						//No, it is not, so we are going to add these together and such.
 						String blueFish = plugin.blockToString(plugin.twoFish.get(slapper));
-						
+
 						//But is this the first sign?  Are we done with this round?
 						if(event.getClickedBlock().equals(plugin.twoFish.get(slapper))) {
 							//Not enough signs slapped?
@@ -79,7 +85,7 @@ public class OnlineSignsPlayerListener extends PlayerListener {
 								slapper.sendMessage(ChatColor.RED + OnlineSigns.language[3]);
 							}
 						}
-						
+
 					} else {
 						//Yes, it is, thus, this is our primary sign.
 						plugin.twoFish.put(slapper, event.getClickedBlock());
