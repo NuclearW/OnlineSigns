@@ -36,36 +36,36 @@ public class OnlineSigns extends JavaPlugin {
 	static File languageFile = new File(mainDirectory + File.separator + "lang");
 
 	public int maxplayers;
-	
-	Logger log = Logger.getLogger("Minecraft");
-	
+
+	Logger log = this.getLogger();
+
 	public HashMap<String, String[]> board = new HashMap<String, String[]>();
 	public HashMap<Player, Boolean> oneFish = new HashMap<Player, Boolean>(maxplayers);
 	public HashMap<Player, Block> twoFish = new HashMap<Player, Block>(maxplayers);
-	
+
 	public static String[] language = new String[8];
-	
+
 	Properties prop = new Properties();
-	
+
 	private final OnlineSignsPlayerListener playerListener = new OnlineSignsPlayerListener(this);
 	private final OnlineSignsPluginListener pluginListener = new OnlineSignsPluginListener(this);
 	private final OnlineSignsPermissionsHandler permissionsHandler = new OnlineSignsPermissionsHandler(this);
 	private final OnlineSignsBlockListener blockListener = new OnlineSignsBlockListener(this);
-	
+
 	public void onEnable() {
 		new File(mainDirectory).mkdir();
-		
+
 		if(!versionFile.exists()) {
 			updateVersion();
 		} else {
 			String vnum = readVersion();
 			if(vnum.equals("0.1")) updateVersion();
 		}
-		
+
 		if(!languageFile.exists()) tryMakeLangFile();
-		
+
 		tryLoadLangFile();
-		
+
 		if(!prop.containsKey("Users-Online") || !prop.containsKey("begin-1") || !prop.containsKey("begin-2")
 				 || !prop.containsKey("slapped-enough") || !prop.containsKey("x-left") || !prop.containsKey("board-created")
 				 || !prop.containsKey("slap-more") || !prop.containsKey("no-permission")) {
@@ -82,11 +82,12 @@ public class OnlineSigns extends JavaPlugin {
 		OnlineSigns.language[5] = prop.getProperty("board-created");
 		OnlineSigns.language[6] = prop.getProperty("slap-more");
 		OnlineSigns.language[7] = prop.getProperty("no-permission");
-		
+
 		loadBoards();
-		
+
 		OnlineSignsPermissionsHandler.initialize(this.getServer());
-		
+
+		// Pretty sure this is an old workaround for an old issue in CB...
 		log.addHandler(new Handler() {
         	public void publish(LogRecord logRecord) {
         		String mystring = logRecord.getMessage();
@@ -101,13 +102,13 @@ public class OnlineSigns extends JavaPlugin {
         	public void close() {
         	}
         });
-		
+
 		this.maxplayers = getServer().getMaxPlayers();
 		PluginManager pluginManager = getServer().getPluginManager();
 		pluginManager.registerEvents(playerListener, this);
 		pluginManager.registerEvents(pluginListener, this);
         pluginManager.registerEvents(blockListener, this);
-		
+
 		log.info("[OnlineSigns] version " + this.getDescription().getVersion() + " loaded.");
 	}
 
@@ -119,7 +120,7 @@ public class OnlineSigns extends JavaPlugin {
 	public boolean hasPermission(Player player, String permission) {
 		return permissionsHandler.hasPermission(player, permission);
 	}
-	
+
 	public String blockToString(Block block) {
 		String string = block.getWorld().getName();
 		string += ":" + Integer.toString(block.getX());
@@ -127,7 +128,7 @@ public class OnlineSigns extends JavaPlugin {
 		string += ":" + Integer.toString(block.getZ());
 		return string;
 	}
-	
+
 	public Block stringToBlock(String string) {
 		// World:X:Y:Z
 		if(!string.contains(":")) return null;
@@ -174,7 +175,7 @@ public class OnlineSigns extends JavaPlugin {
 			}
 		}, 1L);
 	}
-	
+
 	public void updateSigns() {
 		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 			public void run() {
@@ -203,10 +204,10 @@ public class OnlineSigns extends JavaPlugin {
 									colorizedName = colorize(pexPrefixColor+playerName);
 								}
 							}
-							
+
 							lines[k] = colorizedName;
 							/**/
-							
+
 							j++;
 							k++;
 						}
@@ -216,7 +217,7 @@ public class OnlineSigns extends JavaPlugin {
 			}
 		}, 1L);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void loadBoards() {
 		if(new File(boardFile).exists()) {
@@ -229,7 +230,7 @@ public class OnlineSigns extends JavaPlugin {
 			} catch (ClassNotFoundException e) { e.printStackTrace(); }
     	}
 	}
-	
+
 	public void saveBoards() {
 		try {
 			new File(boardFile).createNewFile();
@@ -239,7 +240,7 @@ public class OnlineSigns extends JavaPlugin {
 		} catch (FileNotFoundException e) { e.printStackTrace();
 		} catch (IOException e) { e.printStackTrace(); }
 	}
-	
+
 	public void updateVersion() {
 		try {
 			versionFile.createNewFile();
@@ -266,10 +267,10 @@ public class OnlineSigns extends JavaPlugin {
 		} finally {
 			if (f != null) try { f.close(); } catch (IOException ignored) { }
 		}
-		
+
 		return new String(buffer);
 	}
-	
+
 	public void tryLoadLangFile() {
 		FileInputStream langin;
 		try {
@@ -282,7 +283,7 @@ public class OnlineSigns extends JavaPlugin {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void tryMakeLangFile() {
 		try {
 			languageFile.createNewFile();
@@ -303,12 +304,12 @@ public class OnlineSigns extends JavaPlugin {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public String colorize(String string) {
-        if(string == null){
-            return "";
-        }
-        
-        return string.replaceAll("&([a-z0-9])", "\u00A7$1");
-    }
+		if(string == null){
+			return "";
+		}
+
+		return string.replaceAll("&([a-z0-9])", "\u00A7$1");
+	}
 }
