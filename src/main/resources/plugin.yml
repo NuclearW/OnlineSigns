@@ -3,6 +3,7 @@ main: com.nuclearw.onlinesigns.OnlineSigns
 version: ${project.version}
 author: NuclearW
 description: OnlineSigns - Slaps signs with a fish, get a playerlist
+softdepend: [PermissionsEx]
 permissions:
     onlinesigns.*:
         default: op

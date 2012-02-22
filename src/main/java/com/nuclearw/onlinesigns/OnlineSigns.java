@@ -34,6 +34,7 @@ public class OnlineSigns extends JavaPlugin {
 	static String boardFile = mainDirectory + File.separator + "boards";
 	static File versionFile = new File(mainDirectory + File.separator + "VERSION");
 	static File languageFile = new File(mainDirectory + File.separator + "lang");
+	static File configFile = new File(mainDirectory + File.separator + "config.yml");
 
 	public int maxplayers;
 
@@ -51,6 +52,8 @@ public class OnlineSigns extends JavaPlugin {
 	private final OnlineSignsPluginListener pluginListener = new OnlineSignsPluginListener(this);
 	private final OnlineSignsPermissionsHandler permissionsHandler = new OnlineSignsPermissionsHandler(this);
 	private final OnlineSignsBlockListener blockListener = new OnlineSignsBlockListener(this);
+
+	private static boolean pexPrefix = false;
 
 	public void onEnable() {
 		new File(mainDirectory).mkdir();
@@ -82,6 +85,8 @@ public class OnlineSigns extends JavaPlugin {
 		OnlineSigns.language[5] = prop.getProperty("board-created");
 		OnlineSigns.language[6] = prop.getProperty("slap-more");
 		OnlineSigns.language[7] = prop.getProperty("no-permission");
+
+		loadConfig();
 
 		loadBoards();
 
@@ -192,21 +197,21 @@ public class OnlineSigns extends JavaPlugin {
 						String[] lines = new String[4];
 						int k = 0;
 						while(k < 4 && j < onlinePlayers.length) {
-							//lines[k] = onlinePlayers[j].getName();
-							
-							/**/
-							String playerName = onlinePlayers[j].getName();
-							String colorizedName = playerName;
-							if(playerName.length()<=14) {
-								String pexPrefix = PermissionsEx.getPermissionManager().getUser(playerName).getPrefix();
-								if(pexPrefix.startsWith("&") && pexPrefix.length() >= 2) {
-									String pexPrefixColor = pexPrefix.substring(0, 2);
-									colorizedName = colorize(pexPrefixColor+playerName);
+							if(pexPrefix) {
+								String playerName = onlinePlayers[j].getName();
+								String colorizedName = playerName;
+								if(playerName.length()<=14) {
+									String pexPrefix = PermissionsEx.getPermissionManager().getUser(playerName).getPrefix();
+									if(pexPrefix.startsWith("&") && pexPrefix.length() >= 2) {
+										String pexPrefixColor = pexPrefix.substring(0, 2);
+										colorizedName = colorize(pexPrefixColor+playerName);
+									}
 								}
-							}
 
-							lines[k] = colorizedName;
-							/**/
+								lines[k] = colorizedName;
+							} else {
+								lines[k] = onlinePlayers[j].getName();
+							}
 
 							j++;
 							k++;
@@ -239,6 +244,14 @@ public class OnlineSigns extends JavaPlugin {
 			obj.close();
 		} catch (FileNotFoundException e) { e.printStackTrace();
 		} catch (IOException e) { e.printStackTrace(); }
+	}
+
+	private void loadConfig() {
+		if(!configFile.exists()) {
+			this.saveDefaultConfig();
+		}
+
+		pexPrefix = getConfig().getBoolean("PEX_Prefix", false);
 	}
 
 	public void updateVersion() {
