@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.nuclearw.onlinesigns</groupId>
     <artifactId>OnlineSigns</artifactId>
-    <version>0.2</version>
+    <version>0.2.1</version>
     <name>OnlineSigns</name>
     <url>https://github.com/NuclearW/OnlineSigns</url>
     <issueManagement>

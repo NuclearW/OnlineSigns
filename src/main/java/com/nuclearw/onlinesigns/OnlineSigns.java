@@ -38,7 +38,7 @@ public class OnlineSigns extends JavaPlugin {
 
 	public int maxplayers;
 
-	Logger log = this.getLogger();
+	Logger log;
 
 	public HashMap<String, String[]> board = new HashMap<String, String[]>();
 	public HashMap<Player, Boolean> oneFish = new HashMap<Player, Boolean>(maxplayers);
@@ -56,6 +56,8 @@ public class OnlineSigns extends JavaPlugin {
 	private static boolean pexPrefix = false;
 
 	public void onEnable() {
+		log = this.getLogger();
+
 		new File(mainDirectory).mkdir();
 
 		if(!versionFile.exists()) {
