@@ -45,7 +45,7 @@ public class OnlineSignsPlayerListener implements Listener {
 				if(event.getClickedBlock().getTypeId() == 63 || event.getClickedBlock().getTypeId() == 68) {
 					Player slapper = event.getPlayer();
 
-					if(!plugin.hasPermission(slapper, "onlinesigns.create")) {
+					if(!slapper.hasPermission("onlinesigns.create")) {
 						slapper.sendMessage(ChatColor.RED + OnlineSigns.language[7]);
 						return;
 					}

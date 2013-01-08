@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.nuclearw.onlinesigns</groupId>
     <artifactId>OnlineSigns</artifactId>
-    <version>0.2.1</version>
+    <version>0.3</version>
     <name>OnlineSigns</name>
     <url>https://github.com/NuclearW/OnlineSigns</url>
     <issueManagement>
@@ -58,30 +58,12 @@
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>spout-repo</id>
-            <url>http://nexus.getspout.org/content/groups/public/</url>
-        </repository>
     </repositories>
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>LATEST</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.nijikokun.bukkit</groupId>
-            <artifactId>Permissions</artifactId>
-            <version>3.1.6</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.tehkode.permissions</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.18</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

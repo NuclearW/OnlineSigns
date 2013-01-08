@@ -27,8 +27,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import ru.tehkode.permissions.bukkit.PermissionsEx;
-
 public class OnlineSigns extends JavaPlugin {
 	static String mainDirectory = "plugins" + File.separator + "OnlineSigns";
 	static String boardFile = mainDirectory + File.separator + "boards";
@@ -38,7 +36,7 @@ public class OnlineSigns extends JavaPlugin {
 
 	public int maxplayers;
 
-	Logger log;
+	private Logger log;
 
 	public HashMap<String, String[]> board = new HashMap<String, String[]>();
 	public HashMap<Player, Boolean> oneFish = new HashMap<Player, Boolean>(maxplayers);
@@ -49,11 +47,7 @@ public class OnlineSigns extends JavaPlugin {
 	Properties prop = new Properties();
 
 	private final OnlineSignsPlayerListener playerListener = new OnlineSignsPlayerListener(this);
-	private final OnlineSignsPluginListener pluginListener = new OnlineSignsPluginListener(this);
-	private final OnlineSignsPermissionsHandler permissionsHandler = new OnlineSignsPermissionsHandler(this);
 	private final OnlineSignsBlockListener blockListener = new OnlineSignsBlockListener(this);
-
-	private static boolean pexPrefix = false;
 
 	public void onEnable() {
 		log = this.getLogger();
@@ -64,7 +58,7 @@ public class OnlineSigns extends JavaPlugin {
 			updateVersion();
 		} else {
 			String vnum = readVersion();
-			if(vnum.equals("0.1")) updateVersion();
+			if(!vnum.equals("0.3")) updateVersion();
 		}
 
 		if(!languageFile.exists()) tryMakeLangFile();
@@ -74,7 +68,7 @@ public class OnlineSigns extends JavaPlugin {
 		if(!prop.containsKey("Users-Online") || !prop.containsKey("begin-1") || !prop.containsKey("begin-2")
 				 || !prop.containsKey("slapped-enough") || !prop.containsKey("x-left") || !prop.containsKey("board-created")
 				 || !prop.containsKey("slap-more") || !prop.containsKey("no-permission")) {
-			this.log.severe("[OnlineSigns] Lang file not complete! Restoring to default!");
+			this.log.severe("Lang file not complete! Restoring to default!");
 			tryMakeLangFile();
 			tryLoadLangFile();
 		}
@@ -88,11 +82,7 @@ public class OnlineSigns extends JavaPlugin {
 		OnlineSigns.language[6] = prop.getProperty("slap-more");
 		OnlineSigns.language[7] = prop.getProperty("no-permission");
 
-		loadConfig();
-
 		loadBoards();
-
-		OnlineSignsPermissionsHandler.initialize(this.getServer());
 
 		// Pretty sure this is an old workaround for an old issue in CB...
 		log.addHandler(new Handler() {
@@ -113,19 +103,14 @@ public class OnlineSigns extends JavaPlugin {
 		this.maxplayers = getServer().getMaxPlayers();
 		PluginManager pluginManager = getServer().getPluginManager();
 		pluginManager.registerEvents(playerListener, this);
-		pluginManager.registerEvents(pluginListener, this);
         pluginManager.registerEvents(blockListener, this);
 
-		log.info("[OnlineSigns] version " + this.getDescription().getVersion() + " loaded.");
+		log.info("Finished loading " + getDescription().getFullName());
 	}
 
 	public void onDisable() {
 		saveBoards();
-		log.info("[OnlineSigns] version " + this.getDescription().getVersion() + " loaded.");
-	}
-	
-	public boolean hasPermission(Player player, String permission) {
-		return permissionsHandler.hasPermission(player, permission);
+		log.info("Finished unloading " + getDescription().getFullName());
 	}
 
 	public String blockToString(Block block) {
@@ -199,21 +184,7 @@ public class OnlineSigns extends JavaPlugin {
 						String[] lines = new String[4];
 						int k = 0;
 						while(k < 4 && j < onlinePlayers.length) {
-							if(pexPrefix) {
-								String playerName = onlinePlayers[j].getName();
-								String colorizedName = playerName;
-								if(playerName.length()<=14) {
-									String pexPrefix = PermissionsEx.getPermissionManager().getUser(playerName).getPrefix();
-									if(pexPrefix.startsWith("&") && pexPrefix.length() >= 2) {
-										String pexPrefixColor = pexPrefix.substring(0, 2);
-										colorizedName = colorize(pexPrefixColor+playerName);
-									}
-								}
-
-								lines[k] = colorizedName;
-							} else {
-								lines[k] = onlinePlayers[j].getName();
-							}
+							lines[k] = onlinePlayers[j].getName();
 
 							j++;
 							k++;
@@ -232,7 +203,7 @@ public class OnlineSigns extends JavaPlugin {
 				ObjectInputStream obj = new ObjectInputStream(new FileInputStream(boardFile));
 				this.board = (HashMap<String, String[]>)obj.readObject();
 			} catch (FileNotFoundException e) { e.printStackTrace();
-			} catch (EOFException e) { log.info("[OnlineSigns] boards file empty.");
+			} catch (EOFException e) { log.info("Boards file empty.");
 			} catch (IOException e) { e.printStackTrace();
 			} catch (ClassNotFoundException e) { e.printStackTrace(); }
     	}
@@ -246,14 +217,6 @@ public class OnlineSigns extends JavaPlugin {
 			obj.close();
 		} catch (FileNotFoundException e) { e.printStackTrace();
 		} catch (IOException e) { e.printStackTrace(); }
-	}
-
-	private void loadConfig() {
-		if(!configFile.exists()) {
-			this.saveDefaultConfig();
-		}
-
-		pexPrefix = getConfig().getBoolean("PEX_Prefix", false);
 	}
 
 	public void updateVersion() {
@@ -318,13 +281,5 @@ public class OnlineSigns extends JavaPlugin {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
-	}
-
-	public String colorize(String string) {
-		if(string == null){
-			return "";
-		}
-
-		return string.replaceAll("&([a-z0-9])", "\u00A7$1");
 	}
 }
